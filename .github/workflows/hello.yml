@@ -1,0 +1,14 @@
+name: Hello DevOps Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print hello message
+        run: echo "Hello DevOps from GitHub Actions"
