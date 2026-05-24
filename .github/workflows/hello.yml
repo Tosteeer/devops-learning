@@ -11,4 +11,4 @@ jobs:
 
     steps:
       - name: Print hello message
-        run: exit 1
+        run: echo "Hello DevOps from GitHub Actions"
