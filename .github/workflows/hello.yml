@@ -1,23 +1,26 @@
-name: Docker Build Pipeline
+name: Environment Variables Pipeline
 
 on:
   push:
     branches:
       - main
 
+env:
+  APP_ENV: dev
+  APP_NAME: devops-learning
+
 jobs:
-  docker-build:
+  show-env:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show Docker version
-        run: docker version
+      - name: Show application environment
+        run: |
+          echo "Application name: $APP_NAME"
+          echo "Environment: $APP_ENV"
 
-      - name: List Docker project files
-        run: ls -la projects/my-nginx-image
-
-      - name: Build Docker image
-        run: docker build -t my-nginx-image ./projects/my-nginx-image
+      - name: Show repository files
+        run: ls -la
