@@ -1,4 +1,4 @@
-name: Check Repository Files
+name: Docker Build Pipeline
 
 on:
   push:
@@ -6,18 +6,18 @@ on:
       - main
 
 jobs:
-  check-files:
+  docker-build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show current directory
-        run: pwd
+      - name: Show Docker version
+        run: docker version
 
-      - name: List repository files
-        run: ls -la
+      - name: List Docker project files
+        run: ls -la projects/my-nginx-image
 
-      - name: List projects directory
-        run: ls -la projects
+      - name: Build Docker image
+        run: docker build -t my-nginx-image ./projects/my-nginx-image
