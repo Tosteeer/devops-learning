@@ -22,5 +22,12 @@ jobs:
           echo "Application name: $APP_NAME"
           echo "Environment: $APP_ENV"
 
+      - name: Use secret safely
+        run: |
+          echo "Secret exists"
+          echo "Secret value is hidden by GitHub: $DEMO_SECRET"
+        env:
+          DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
+
       - name: Show repository files
         run: ls -la
