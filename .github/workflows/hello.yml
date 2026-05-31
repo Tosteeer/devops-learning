@@ -1,4 +1,4 @@
-name: Environment Variables Pipeline
+name: Docker Build Pipeline
 
 on:
   push:
@@ -6,29 +6,27 @@ on:
       - main
 
 env:
-  APP_ENV: dev
-  APP_NAME: devops-learning
+  IMAGE_NAME: my-nginx-image
 
 jobs:
-  show-env:
+  docker-build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show application environment
-        run: |
-          echo "Application name: $APP_NAME"
-          echo "Environment: $APP_ENV"
+      - name: Show Docker version
+        run: docker version
 
-      - name: Check secret exists
+      - name: Show image tag idea
         run: |
-          if [ -z "$DEMO_SECRET" ]; then
-            echo "DEMO_SECRET is empty"
-            exit 1
-          fi
-          echo "DEMO_SECRET is configured"
-          echo "Secret value is masked: $DEMO_SECRET"
-        env:
-          DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
+          echo "Image name: $IMAGE_NAME"
+          echo "Commit SHA: $GITHUB_SHA"
+          echo "Future image tag could be: $IMAGE_NAME:$GITHUB_SHA"
+
+      - name: List Docker project files
+        run: ls -la projects/my-nginx-image
+
+      - name: Build Docker image
+        run: docker build -t $IMAGE_NAME:$GITHUB_SHA ./projects/my-nginx-image
