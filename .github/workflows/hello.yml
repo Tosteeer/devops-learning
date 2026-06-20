@@ -1,32 +1,38 @@
-name: Docker Build Pipeline
+name: Build and Push Docker Image
 
 on:
   push:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 env:
-  IMAGE_NAME: my-nginx-image
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/my-nginx-image
 
 jobs:
-  docker-build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show Docker version
-        run: docker version
-
-      - name: Show image tag idea
+      - name: Show image name
         run: |
+          echo "Registry: $REGISTRY"
           echo "Image name: $IMAGE_NAME"
           echo "Commit SHA: $GITHUB_SHA"
-          echo "Future image tag could be: $IMAGE_NAME:$GITHUB_SHA"
+          echo "Full image tag: $REGISTRY/${IMAGE_NAME,,}:$GITHUB_SHA"
 
-      - name: List Docker project files
-        run: ls -la projects/my-nginx-image
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t $IMAGE_NAME:$GITHUB_SHA ./projects/my-nginx-image
+        run: docker build -t $REGISTRY/${IMAGE_NAME,,}:$GITHUB_SHA ./projects/my-nginx-image
+
+      - name: Push Docker image
+        run: docker push $REGISTRY/${IMAGE_NAME,,}:$GITHUB_SHA
